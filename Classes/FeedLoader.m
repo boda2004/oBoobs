@@ -34,7 +34,7 @@
 	NSArray *feed = [decoder objectWithData:self.data error:&err];
 	[decoder release];
 	if (err) {
-		NSLog(@"error: %s",[err localizedDescription]);
+		NSLog(@"error: %@",[err localizedDescription]);
 		[delegate performSelectorOnMainThread:@selector(feedParsed:) withObject:[NSArray array] waitUntilDone:YES];
 	} else {
 		[delegate performSelectorOnMainThread:@selector(feedParsed:) withObject:feed waitUntilDone:YES];
