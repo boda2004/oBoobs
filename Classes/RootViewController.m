@@ -27,6 +27,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	self.boobsItems = [NSMutableArray array];
+	[[NSNotificationCenter defaultCenter] addObserver:self.tableView 
+                                             selector:@selector(reloadData)
+                                                 name:@"imageLoaded"
+                                               object:nil];
+
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     NSURL *url = [NSURL URLWithString:@"http://api.oboobs.ru/boobs/0/100/-id"];
     NSURLRequest *theRequest=[NSURLRequest requestWithURL:url
@@ -54,38 +59,17 @@
 	[self.tableView reloadData];
 }
 
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-	[[NSNotificationCenter defaultCenter] addObserver:self.tableView 
-                                             selector:@selector(reloadData)
-                                                 name:@"imageLoaded"
-                                               object:nil];
-	
-}
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-*/
-/*
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-}
-*/
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
-	[[NSNotificationCenter defaultCenter] removeObserver:self.tableView];
-
+- (void)viewDidUnload {
+    [super viewDidUnload];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-/*
  // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	// Return YES for supported orientations.
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
+	return YES;
 }
- */
+
 
 
 #pragma mark -
@@ -170,7 +154,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	Fullscreen *fs = [[Fullscreen alloc]initWithNibName:@"Fullscreen" bundle:nil];
 	fs.navigationItem.title = [self.tableView cellForRowAtIndexPath:indexPath].textLabel.text;
-	fs.url = [@"http://media.oboobs.ru/" stringByAppendingString:[[boobsItems objectAtIndex:indexPath.row]objectForKey:@"preview"]];
+	fs.url = [@"http://media.oboobs.ru/" stringByAppendingString:[[[boobsItems objectAtIndex:indexPath.row]objectForKey:@"preview"] stringByReplacingOccurrencesOfString:@"boobs_preview" withString:@"boobs"]];
 	[self.navigationController pushViewController:fs animated:YES];
 	[fs release];
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -186,12 +170,6 @@
     
     // Relinquish ownership any cached data, images, etc that aren't in use.
 }
-
-- (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
-}
-
 
 - (void)dealloc {
 	self.boobsItems = nil;

@@ -30,20 +30,20 @@
 }
 */
 
-/*
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(refreshImage)
+                                                 name:@"imageLoaded"
+                                               object:nil];
+	[self refreshImage];
 }
-*/
 
-/*
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations.
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+	// Return YES for supported orientations.
+	return YES;
 }
-*/
 
 - (void)didReceiveMemoryWarning {
     // Releases the view if it doesn't have a superview.
@@ -54,24 +54,7 @@
 
 - (void)viewDidUnload {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(refreshImage)
-                                                 name:@"imageLoaded"
-                                               object:nil];
-	[self refreshImage];
-	
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	
 }
 
 -(void) refreshImage {
